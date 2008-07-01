@@ -1,0 +1,71 @@
+/* Copyright (c) 2005 - 2007 Nokia Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+targettype 	dll
+TARGET	       	pyaosocket.pyd
+
+<% unless build.v9? %>
+TARGETPATH      \system\libs\
+<% end %>
+
+UID             <%= build.uid2.chex_string %> <%= build.uid3.chex_string %>
+
+NOSTRICTDEF
+EXPORTUNFROZEN
+
+SYSTEMINCLUDE 	\epoc32\include
+SYSTEMINCLUDE 	\epoc32\include\libc     // for Python headers
+SYSTEMINCLUDE 	\epoc32\include\python
+
+//systeminclude \epoc32\include\stdapis
+//library libc.lib
+
+USERINCLUDE 	.
+USERINCLUDE 	..\..\src
+
+SOURCEPATH 	..\..\src
+source		module.cpp
+source		local_epoc_py_utils.cpp
+
+source apnflogger.cpp
+source apnimmediate.cpp
+source apnitc.cpp
+source apnloop.cpp
+source apnportdiscoverer.cpp
+source apnresolver.cpp
+source apnsocket.cpp
+source apnsocketserv.cpp
+source btengine.cpp
+source panic.cpp
+source resolution.cpp
+source socketaos.cpp
+
+library bluetooth.lib
+library btmanclient.lib
+library efsrv.lib
+library esock.lib
+library euser.lib
+library flogger.lib
+library insock.lib
+library python222.lib
+library sdpagent.lib
+library sdpdatabase.lib
+
+<% if build.trait_map[:do_logging] %>
+//LIBRARY         flogger.lib
+<% end %>
+
+<% if build.v9? %>
+CAPABILITY 	<%= build.caps_string %>
+<% end %>
