@@ -151,8 +151,10 @@ void CAoResolver::Discover(PyObject* aCallback, PyObject* aParam)
 
 	iInquirySockAddr.SetIAC(KGIAC);
 	iInquirySockAddr.SetAction(KHostResInquiry|KHostResName);
-	// should we use KHostResIgnoreCache?
-	// maybe not if only names are cached
+		// We should also specify KHostResIgnoreCache if we did not
+		// want cache BT friendly names, but in most cases we do not
+		// require genuine name discovery, and device discovery is
+		// slow enough as it is.
 
 	iHostResolver.GetByAddress(iInquirySockAddr, iNameEntry, iStatus);
 	SetActive();
