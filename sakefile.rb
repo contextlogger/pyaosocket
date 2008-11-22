@@ -177,6 +177,7 @@ Sake::Tasks::force_uncurrent_on_op_change
 
 task :web do
   srcfiles = Dir['web/*.txt2tags.txt']
+  sh("darcs changes > web/changelog.txt")
   for srcfile in srcfiles
     htmlfile = srcfile.sub(/\.txt2tags\.txt$/, ".html")
     sh("tools/txt2tags --target xhtml --infile %s --outfile %s --encoding utf-8 --verbose" % [srcfile, htmlfile])

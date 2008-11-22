@@ -62,6 +62,10 @@ public:
 	void SetSocketServ(PyObject* aSocketServ);
 	RSocketServ& SocketServ() const;
 
+	//// RConnection accessor(s).
+	//// Only affects new connections, not existing ones.
+	void SetConnection(PyObject* aConnection);
+
 	//// socket opening methods (synchronous)
 	TInt Blank();
 	TInt OpenTcp();
@@ -137,6 +141,9 @@ private:
 	// it does not get garbage collected while we still need
 	// the session.
 	PyObject* iSocketServ;
+
+	// NULL if not set. Cleared by Close().
+	PyObject* iConnection;
 
 	// these are created lazily, and then exist until Close()
 	// gets called
@@ -353,8 +360,18 @@ TInt CAoSocket::OpenTcp()
 	EnsureNoSession(EFalse);
 	iMode = ETcpMode;
 
-	TInt error = iRSocket.Open(socketServ, KAfInet,
-							   KSockStream, KProtocolInetTcp); // xxx there is an overload that takes an RConnection as 5th argument
+	TInt error;
+	if (iConnection)
+		{
+		error = iRSocket.Open(socketServ, KAfInet,
+							  KSockStream, KProtocolInetTcp,
+							  ToCxxConnection(iConnection));
+		}
+	else
+		{
+		error = iRSocket.Open(socketServ, KAfInet,
+							  KSockStream, KProtocolInetTcp);
+		}
 	if (!error)
 		{
 		SET_SESSION_OPEN(iRSocket);
@@ -802,6 +819,18 @@ RSocketServ& CAoSocket::SocketServ() const
 	return socketServ;
 	}
 
+void CAoSocket::SetConnection(PyObject* aConnection)
+	{
+	Py_XDECREF(iConnection);
+	iConnection = NULL;
+
+	if (aConnection != Py_None)
+		{
+		Py_INCREF(aConnection);
+		iConnection = aConnection;
+		}
+	}
+
 void CAoSocket::EnsureNoSession(TBool aFull)
 	{
 	if (IS_SUBSESSION_OPEN(iRSocket))
@@ -867,6 +896,9 @@ void CAoSocket::Close(TBool aFull)
 		iRSocket.Close();
 		SET_SESSION_CLOSED(iRSocket);
 		}
+
+	Py_XDECREF(iConnection);
+	iConnection = NULL;
 
 	if (iSocketServ && aFull)
 		{
@@ -1012,6 +1044,20 @@ static PyObject* apn_socket_setss(apn_socket_object* self,
 	AssertNonNull(self);
 	AssertNonNull(self->iAoSocket);
 	self->iAoSocket->SetSocketServ(ss);
+	RETURN_NO_VALUE;
+	}
+
+static PyObject* apn_socket_setconn(apn_socket_object* self,
+									PyObject* args)
+	{
+	PyObject* obj;
+	if (!PyArg_ParseTuple(args, "O", &obj))
+		{
+		return NULL;
+		}
+	AssertNonNull(self);
+	AssertNonNull(self->iAoSocket);
+	self->iAoSocket->SetConnection(obj);
 	RETURN_NO_VALUE;
 	}
 
@@ -1405,6 +1451,7 @@ const static PyMethodDef apn_socket_methods[] =
 	{
 	//// synchronous calls
 	{"set_socket_serv", (PyCFunction)apn_socket_setss, METH_VARARGS},
+	{"set_connection", (PyCFunction)apn_socket_setconn, METH_VARARGS},
 	{"blank", (PyCFunction)apn_socket_blank, METH_NOARGS},
 	{"open_tcp", (PyCFunction)apn_socket_opentcp, METH_NOARGS},
 	{"open_bt", (PyCFunction)apn_socket_openbt, METH_NOARGS},
