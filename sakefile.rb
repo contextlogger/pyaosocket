@@ -17,7 +17,7 @@ $basename = "pyaosocket"
 
 $proj = Sake::Project.new(:basename => $basename,
                           :name => "AoSocket Library for PyS60",
-                          :version => [1, 1],
+                          :version => [2, 2],
                           # This is a test UID.
                           :uid => Sake::Uid.v8($uid_v8),
                           :vendor => "HIIT")
