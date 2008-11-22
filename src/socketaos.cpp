@@ -40,10 +40,12 @@
 // CDnsResolver...
 
 CDnsResolver::CDnsResolver(MGenericAoObserver& aObserver,
-						   RSocketServ& aSocketServ) :
+						   RSocketServ& aSocketServ,
+						   RConnection* aConnection) :
 	CActive(EPriorityStandard),
 	iObserver(aObserver),
-	iSocketServ(aSocketServ)
+	iSocketServ(aSocketServ),
+	iConnection(aConnection)
 	{
 	CActiveScheduler::Add(this);
 	}
@@ -90,8 +92,17 @@ void CDnsResolver::Resolve(const TDesC& aHostName)
 	// ensure that we have a resolver session we can use
 	if (!IS_SUBSESSION_OPEN(iHostResolver))
 		{
-		TInt error = iHostResolver.Open(
-			iSocketServ, KAfInet, KProtocolInetUdp);
+		TInt error;
+		if (iConnection)
+			{
+			error = iHostResolver.Open(
+				iSocketServ, KAfInet, KProtocolInetUdp, *iConnection);
+			}
+		else
+			{
+			error = iHostResolver.Open(
+				iSocketServ, KAfInet, KProtocolInetUdp);
+			}
 		if (error != KErrNone && error != KErrAlreadyExists)
 			{
 			iStatus = KRequestPending;
@@ -210,12 +221,13 @@ void CSocketConnecter::RunL()
 
 CResolvingConnecter* CResolvingConnecter::NewL(MAoSockObserver& aObserver,
 											   RSocket& aSocket,
-											   RSocketServ& aSocketServ)
+											   RSocketServ& aSocketServ,
+											   RConnection* aConnection)
 	{
 	CResolvingConnecter* object = new (ELeave)
 		CResolvingConnecter(aObserver, aSocket);
 	CleanupStack::PushL(object);
-	object->ConstructL(aSocketServ);
+	object->ConstructL(aSocketServ, aConnection);
 	CleanupStack::Pop();
 	return object;
 	}
@@ -229,9 +241,10 @@ CResolvingConnecter::CResolvingConnecter(MAoSockObserver& aObserver,
 	CActiveScheduler::Add(this);
 	}
 
-void CResolvingConnecter::ConstructL(RSocketServ& aSocketServ)
+void CResolvingConnecter::ConstructL(RSocketServ& aSocketServ,
+									 RConnection* aConnection)
 	{
-	iDnsResolver = new (ELeave) CDnsResolver(*this, aSocketServ);
+	iDnsResolver = new (ELeave) CDnsResolver(*this, aSocketServ, aConnection);
 	iSocketConnecter = new (ELeave)
 		CSocketConnecter(*this, iSocket, aSocketServ);
 	}

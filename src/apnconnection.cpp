@@ -39,7 +39,8 @@
 // --------------------------------------------------------------------
 // object structure...
 
-// Python object wrapper for RConnection.
+// Python object wrapper for RConnection. An RConnection is a socket
+// server sub-session, and hence an RSocketServ reference is required.
 struct apn_connection_object {
   PyObject_VAR_HEAD;
   PyObject* iSocketServ; // wraps RSocketServ

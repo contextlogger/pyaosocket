@@ -63,7 +63,6 @@ public:
 	RSocketServ& SocketServ() const;
 
 	//// RConnection accessor(s).
-	//// Only affects new connections, not existing ones.
 	void SetConnection(PyObject* aConnection);
 
 	//// socket opening methods (synchronous)
@@ -467,7 +466,8 @@ void CAoSocket::ConnectTcpL(const TDesC& aHostName,
 	if (!iTcpConnecter)
 		{
 		iTcpConnecter = CResolvingConnecter::NewL(
-			*this, iRSocket, SocketServ());
+			*this, iRSocket, SocketServ(),
+			iConnection ? (&ToCxxConnection(iConnection)) : NULL);
 		}
 
 	Py_INCREF(aCallback);
@@ -807,6 +807,10 @@ void CAoSocket::DataWritten(TInt aError)
 
 void CAoSocket::SetSocketServ(PyObject* aSocketServ)
 	{
+	// The socket server session is shared by RConnection,
+	// RHostResolver, and RSocket, and really cannot be changed on
+	// the fly. Everything must be closed before the sesion can be
+	// changed.
 	EnsureNoSession(ETrue);
 	Py_INCREF(aSocketServ);
 	iSocketServ = aSocketServ;
@@ -821,8 +825,16 @@ RSocketServ& CAoSocket::SocketServ() const
 
 void CAoSocket::SetConnection(PyObject* aConnection)
 	{
-	Py_XDECREF(iConnection);
-	iConnection = NULL;
+	// RConnection is shared by RHostResolver and RSocket, and
+	// again, we must ensure those are closed before we can go
+	// change the connection.
+	//
+	// Also, do not know if it would be okay for say an RSocket
+	// and an RConnection to have a different RSocketServ session,
+	// but if that is not okay then some things will error out, but
+	// reference counting and all other internal consistency
+	// should be fine within AoSocket.
+	EnsureNoSession(EFalse);
 
 	if (aConnection != Py_None)
 		{

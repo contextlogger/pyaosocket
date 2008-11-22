@@ -64,8 +64,11 @@ public:
 NONSHARABLE_CLASS(CDnsResolver) : public CActive
 	{
 public:
+	/** it is okay for 'aConnection' to be NULL,
+		in which case an implicit connection is created and used */
 	CDnsResolver(MGenericAoObserver& aObserver,
-				 RSocketServ& aSocketServ);
+				 RSocketServ& aSocketServ,
+				 RConnection* aConnection);
 	~CDnsResolver();
 	/** aHostName need not persist after call */
 	void Resolve(const TDesC& aHostName);
@@ -78,6 +81,7 @@ private:
 	MGenericAoObserver& iObserver;
 	RSocketServ& iSocketServ;
 	RHostResolver iHostResolver;
+	RConnection* iConnection; // not owned
 	DEF_SESSION_OPEN(iHostResolver);
 	HBufC* iData;
 	void ClearData();
@@ -120,10 +124,12 @@ public:
 	/** takes an open socket as a parameter;
 		this object attempts to connect it,
 		but will not close or reopen the provided
-		socket */
+		socket;
+		any RConnection is just passed to CDnsResolver */
 	static CResolvingConnecter* NewL(MAoSockObserver& aObserver,
 									 RSocket& aSocket,
-									 RSocketServ& aSocketServ);
+									 RSocketServ& aSocketServ,
+									 RConnection* aConnection);
 	~CResolvingConnecter();
 	/** aServerAddress need not persist after call */
 	void Connect(const TDesC& aHostName, TInt aPort);
@@ -133,7 +139,8 @@ protected:
 private:
 	CResolvingConnecter(MAoSockObserver& aObserver,
 						RSocket& aSocket);
-	void ConstructL(RSocketServ& aSocketServ);
+	void ConstructL(RSocketServ& aSocketServ,
+					RConnection* aConnection);
 
 	void AoEventOccurred(CActive* aOrig, TInt aError);
 	MAoSockObserver& iObserver;
