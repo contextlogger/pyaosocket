@@ -52,7 +52,7 @@
    Symbian sockets. But we shall keep track of what is open
    an what is not, using these macros.
 */
-#if NO_SESSION_HANDLE_ACCESS
+#if NO_SESSION_HANDLE_ACCESS || defined(EXPLICIT_SESSION_TRACKING)
 #define IS_SESSION_OPEN(x) (x##IsOpen)
 #define IS_SUBSESSION_OPEN(x) (x##IsOpen)
 #define DEF_SESSION_OPEN(x) TBool x##IsOpen

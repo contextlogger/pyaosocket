@@ -46,6 +46,7 @@ source apnportdiscoverer.cpp
 source apnresolver.cpp
 source apnsocket.cpp
 source apnsocketserv.cpp
+source apnconnection.cpp
 source btengine.cpp
 source panic.cpp
 source resolution.cpp
@@ -53,6 +54,7 @@ source socketaos.cpp
 
 library bluetooth.lib
 library btmanclient.lib
+library commdb.lib
 library efsrv.lib
 library esock.lib
 library euser.lib

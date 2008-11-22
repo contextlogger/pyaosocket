@@ -46,9 +46,8 @@
 #include "resolution.h"
 #include "settings.h"
 #include "socketaos.h"
-
-// from apnsocketserv.cpp
-extern RSocketServ& ToSocketServ(PyObject* aObject);
+#include "apnsocketserv.h"
+#include "apnconnection.h"
 
 // --------------------------------------------------------------------
 // CAoSocket interface...
@@ -355,7 +354,7 @@ TInt CAoSocket::OpenTcp()
 	iMode = ETcpMode;
 
 	TInt error = iRSocket.Open(socketServ, KAfInet,
-							   KSockStream, KProtocolInetTcp);
+							   KSockStream, KProtocolInetTcp); // xxx there is an overload that takes an RConnection as 5th argument
 	if (!error)
 		{
 		SET_SESSION_OPEN(iRSocket);
@@ -1025,6 +1024,8 @@ static PyObject* apn_socket_openbt(apn_socket_object* self,
 	RETURN_ERROR_OR_PYNONE(error);
 	}
 
+// xxx we should maybe add an optional or keyword argument here for taking an RConnection object as an argument, or alternatively we could have a separate method for setting an RConnection handle here prior to calling open (similar to set_socket_serv) -- in any case python refcounting should make sure it stays alive for long as required
+// xxx we will hopefully get ap selection code from pys60, but have to read the apache license
 static PyObject* apn_socket_opentcp(apn_socket_object* self,
 								   PyObject* /*args*/)
 	{

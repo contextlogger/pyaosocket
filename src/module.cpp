@@ -36,8 +36,8 @@
 #include <f32file.h> // RFs
 #include "btengine.h"
 #include "local_epoc_py_utils.h"
-
-
+#include "apnsocketserv.h"
+#include "apnconnection.h"
 
 
 
@@ -50,11 +50,6 @@ extern PyObject* apn_immediate_new(PyObject* /*self*/,
  */
 extern PyObject* apn_socket_new(PyObject* /*self*/,
 								PyObject* /*args*/);
-
-/** A module method.
- */
-extern PyObject* apn_socketserv_new(PyObject* /*self*/,
-									PyObject* /*args*/);
 
 /** A module method.
  */
@@ -179,6 +174,7 @@ static const PyMethodDef apn_methods[] =
 	{"AoImmediate", (PyCFunction)apn_immediate_new, METH_NOARGS},
 	{"AoSocket", (PyCFunction)apn_socket_new, METH_NOARGS},
 	{"AoSocketServ", (PyCFunction)apn_socketserv_new, METH_NOARGS},
+	{"AoConnection", (PyCFunction)apn_connection_new, METH_NOARGS},
 	{"AoLoop", (PyCFunction)apn_loop_new, METH_NOARGS},
 	{"AoItc", (PyCFunction)apn_itc_new, METH_NOARGS},
 #ifdef __HAS_FLOGGER__
@@ -198,7 +194,6 @@ static const PyMethodDef apn_methods[] =
 
 extern TInt apn_immediate_ConstructType();
 extern TInt apn_socket_ConstructType();
-extern TInt apn_socketserv_ConstructType();
 extern TInt apn_loop_ConstructType();
 extern TInt apn_itc_ConstructType();
 #ifdef __HAS_FLOGGER__
@@ -228,6 +223,7 @@ DL_EXPORT(void) initpyaosocket()
 	if (apn_immediate_ConstructType() < 0) return;
 	if (apn_socket_ConstructType() < 0) return;
 	if (apn_socketserv_ConstructType() < 0) return;
+	if (apn_connection_ConstructType() < 0) return;
 	if (apn_loop_ConstructType() < 0) return;
 	if (apn_itc_ConstructType() < 0) return;
 #ifdef __HAS_FLOGGER__
