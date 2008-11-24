@@ -34,6 +34,7 @@
 
 #include <e32std.h>
 #include <es_sock.h>
+#include "local_symbian_utils.h"
 #include "settings.h"
 
 // --------------------------------------------------------------------

@@ -184,6 +184,31 @@ task :web do
   end
 end
 
+desc "Prepares downloads for the current version."
+task :release do
+  web_dir = "download"
+
+  mkdir_p web_dir
+
+  for build in $builds
+    ## Unsigned.
+    if (not build.sign_sis?) or (build.sign_sis? and ($cert_name == "dev"))
+      src_sis_file = build.to_proj_rel(build.long_sis_file).to_s
+      sis_basename = File.basename(src_sis_file)
+      download_file = File.join(web_dir, sis_basename)
+      ln(src_sis_file, download_file, :force => true)
+    end
+
+    ## Signed.
+    if build.sign_sis? and ($cert_name == "self")
+      src_sis_file = build.to_proj_rel(build.long_sisx_file).to_s
+      sis_basename = File.basename(src_sis_file)
+      download_file = File.join(web_dir, sis_basename)
+      ln(src_sis_file, download_file, :force => true)
+    end
+  end
+end
+
 def sis_info opt
   for build in $builds
     if build.short_sisx_file.exist?
