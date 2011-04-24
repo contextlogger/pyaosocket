@@ -1,4 +1,5 @@
 PRJ_PLATFORMS 
+gcce
 
 PRJ_MMPFILES 
 pyaosocket.mmp 

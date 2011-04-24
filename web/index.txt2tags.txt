@@ -21,7 +21,9 @@ The code is still covered by the MIT license, as it was when initially released 
 
 h1. Download
 
-A [collection of release builds ../download/] is available. The ``sisx`` file without a version number is the latest release. You may or may not find the [changelog.txt changelog.txt] file useful in trying to determine what has changed between releases.
+A [collection of release builds ../download/] is available. The ``self`` variant is self-signed, with maximum self-signable capabilities. The ``dev`` variant is signable with Symbian's Open Signed Online or with a developer certificate, and has maximum capabilities allowed by Open Signed Online.
+
+You may or may not find the [changelog.txt changelog.txt] file useful in trying to determine what has changed between releases.
 
 A [darcs http://darcs.net/] repository of the [source code ..] (with change history) is also available, and can be retrieved with the ``get`` command of ``darcs``.
 
