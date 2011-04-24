@@ -2,12 +2,11 @@ pyaosocket for Python for S60
 
 %%mtime(%c)
 
-%!includeconf: config.t2t
 %! Options : --toc --enum-title
 
 h1. Introduction
 
-pyaosocket is a renamed and slightly updated version of aosocketnativenew, the [Python for S60 http://www.forum.nokia.com/python] native extension that served as a basis for the aosocket library developed in the [PDIS http://pdis.hiit.fi/pdis/] project at [HIIT http://www.hiit.fi/].
+pyaosocket is a renamed and slightly updated version of aosocketnativenew, the [Python for S60 https://garage.maemo.org/projects/pys60] native extension that served as a basis for the aosocket library developed in the [PDIS http://pdis.hiit.fi/pdis/] project at [HIIT http://www.hiit.fi/].
 
 We did not previously release the library separately, but it could be found as part of the full [PDIS releases http://pdis.hiit.fi/pdis/download/pdis/].
 
@@ -21,23 +20,23 @@ The code is still covered by the MIT license, as it was when initially released 
 
 h1. Download
 
-A [collection of release builds ../download/] is available. The ``self`` variant is self-signed, with maximum self-signable capabilities. The ``dev`` variant is signable with Symbian's Open Signed Online or with a developer certificate, and has maximum capabilities allowed by Open Signed Online.
+A [collection of release builds download/] is available. The ``self`` variant is self-signed, with maximum self-signable capabilities. The ``dev`` variant is signable with Symbian's Open Signed Online or with a developer certificate, and has maximum capabilities allowed by Open Signed Online.
 
-You may or may not find the [changelog.txt changelog.txt] file useful in trying to determine what has changed between releases.
+You may or may not find the [changelog https://github.com/contextlogger/pyaosocket/commits/master/] useful in trying to determine what has changed between releases.
 
-A [darcs http://darcs.net/] repository of the [source code ..] (with change history) is also available, and can be retrieved with the ``get`` command of ``darcs``.
+A [Git http://git-scm.com/] repository of the source code (with change history) is also available, hosted on GitHub at http://github.com/contextlogger/pyaosocket.
 
 h1. Dependencies
 
-The software should run on S60 2nd and 3rd edition devices, and it depends on the [Python for S60 http://www.forum.nokia.com/python/] runtime. Does not depend on non-public APIs or anything exotic.
-
-h1. Contributing
-
-Contributions are welcome. Send patches to the below email address. The ``send`` command of ``darcs`` may be used.
+The software should run on S60 2nd and 3rd edition devices (and probably on newer platform versions as well), and it depends on the Python for S60 runtime. Does not depend on non-public APIs or anything exotic.
 
 h1. Acknowledgements
 
 The library was created in the [PDIS project http://pdis.hiit.fi/pdis/] at [HIIT http://www.hiit.fi/].
 
 ------------------------------------------------
-Tero Hasu /// tero.hasu@hut.fi
+_signature_th_
+
+% Local Variables:
+% mode: longlines
+% End:
