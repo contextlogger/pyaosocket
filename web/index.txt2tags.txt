@@ -10,6 +10,8 @@ pyaosocket is a renamed and slightly updated version of aosocketnativenew, the [
 
 We did not previously release the library separately, but it could be found as part of the full [PDIS releases http://pdis.hiit.fi/pdis/download/pdis/].
 
+Only PyS60 1.4.x series is supported by this extension.
+
 h1. Status
 
 The library has been extensively tested as part of PDIS, but conceivably post-PDIS changes could have broken something.
